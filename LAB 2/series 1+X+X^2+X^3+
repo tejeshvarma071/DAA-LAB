@@ -1,0 +1,19 @@
+// for complexity o(1)
+
+#include <stdio.h>
+
+int main() {
+    int a, r, n;
+    int sum = 0;
+    printf("Enter a, r, n: ");
+    scanf("%d %d %d", &a, &r, &n);
+    for (int i = 0; i < n; i++) {
+        long long term = 1;
+        for (int j = 0; j < i; j++) {  
+            term *= r;
+        }
+        sum += a * term;   
+    }
+    printf("Sum = %lld\n", sum);
+    return 0;
+}
