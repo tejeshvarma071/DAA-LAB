@@ -1,0 +1,117 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+// Node structure
+struct node {
+    int data;
+    struct node *left, *right;
+};
+
+// Create new node
+struct node* newNode(int item) {
+    struct node* temp = (struct node*)malloc(sizeof(struct node));
+    temp->data = item;
+    temp->left = temp->right = NULL;
+    return temp;
+}
+
+// Insert a node in BST
+struct node* insert(struct node* root, int value) {
+    if (root == NULL) return newNode(value);
+
+    if (value < root->data)
+        root->left = insert(root->left, value);
+    else if (value > root->data)
+        root->right = insert(root->right, value);
+
+    return root;
+}
+
+// Find minimum value node (used in deletion)
+struct node* findMin(struct node* root) {
+    while (root && root->left != NULL)
+        root = root->left;
+    return root;
+}
+
+// Delete a node from BST
+struct node* deleteNode(struct node* root, int value) {
+    if (root == NULL) return root;
+
+    if (value < root->data)
+        root->left = deleteNode(root->left, value);
+    else if (value > root->data)
+        root->right = deleteNode(root->right, value);
+    else {
+        // Case 1: No child
+        if (root->left == NULL && root->right == NULL) {
+            free(root);
+            return NULL;
+        }
+        // Case 2: One child
+        else if (root->left == NULL) {
+            struct node* temp = root->right;
+            free(root);
+            return temp;
+        }
+        else if (root->right == NULL) {
+            struct node* temp = root->left;
+            free(root);
+            return temp;
+        }
+        // Case 3: Two children
+        struct node* temp = findMin(root->right);
+        root->data = temp->data;
+        root->right = deleteNode(root->right, temp->data);
+    }
+    return root;
+}
+
+// Inorder Traversal (LNR)
+void inorder(struct node* root) {
+    if (root == NULL) return;
+    inorder(root->left);
+    printf("%d ", root->data);
+    inorder(root->right);
+}
+
+// Preorder Traversal (NLR)
+void preorder(struct node* root) {
+    if (root == NULL) return;
+    printf("%d ", root->data);
+    preorder(root->left);
+    preorder(root->right);
+}
+
+// Postorder Traversal (LRN)
+void postorder(struct node* root) {
+    if (root == NULL) return;
+    postorder(root->left);
+    postorder(root->right);
+    printf("%d ", root->data);
+}
+
+// Main function
+int main() {
+    struct node* root = NULL;
+    root = insert(root, 50);
+    insert(root, 30);
+    insert(root, 20);
+    insert(root, 40);
+    insert(root, 70);
+    insert(root, 60);
+    insert(root, 80);
+
+    printf("Inorder before deletion:\n");
+    inorder(root);
+    root = deleteNode(root, 20);  
+    root = deleteNode(root, 30);  
+    root = deleteNode(root, 50);  
+    printf("\n\nInorder after deletion:\n");
+    inorder(root);
+    printf("\nPreorder after deletion:\n");
+    preorder(root);
+    printf("\nPostorder after deletion:\n");
+    postorder(root);
+    return 0;
+}
