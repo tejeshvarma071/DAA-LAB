@@ -1,4 +1,4 @@
-// for complexity o(1)
+// for complexity o(n^2)
 
 #include <stdio.h>
 
