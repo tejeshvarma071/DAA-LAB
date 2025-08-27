@@ -1,0 +1,48 @@
+#include<stdio.h>
+#include <math.h>
+
+// Function to print a move
+void moveDisk(int disk, int from, int to) {
+    printf("Move disk %d from Tower %d to Tower %d\n", disk, from, to);
+}
+
+// Function to find which disk to move at step i
+int diskToMove(int moveNumber) {
+    int disk = 0;
+    while ((moveNumber & 1) == 0) {
+        moveNumber >>= 1;
+        disk++;
+    }
+    return disk + 1; // disk numbers start at 1
+}
+
+int main() {
+    int n;
+    printf("Enter number of Disks: ");
+    scanf("%d", &n);
+
+    int totalMoves = (int)pow(2, n) - 1; 
+
+    int src = 1, aux = 2, dest = 3;
+
+    if (n % 2 == 0) {
+        int temp = dest;
+        dest = aux;
+        aux = temp;
+    }
+
+    for (int i = 1; i <= totalMoves; i++) {
+        int disk = diskToMove(i); 
+        if (i % 3 == 1) {
+            moveDisk(disk, src, dest);
+        }
+        else if (i % 3 == 2) {
+            moveDisk(disk, src, aux);
+        }
+        else {
+            moveDisk(disk, aux, dest);
+        }
+    }
+
+    return 0;
+}
