@@ -1,0 +1,41 @@
+#include <stdio.h>
+int main() {
+    int n, c;
+    printf("Enter number of items and knapsack capacity: ");
+    scanf("%d %d", &n, &c);
+    int profit[100], weight[100];
+    for (int i = 0; i < n; i++) {
+        printf("Enter profit and weight of item %d: ", i + 1);
+        scanf("%d %d", &profit[i], &weight[i]);
+    }
+    for (int i = 0; i < n - 1; i++) {
+        for (int j = 0; j < n - i - 1; j++) {
+            if (profit[j] < profit[j + 1]) { 
+                int tempP = profit[j];
+                profit[j] = profit[j + 1];
+                profit[j + 1] = tempP;
+                int tempW = weight[j];
+                weight[j] = weight[j + 1];
+                weight[j + 1] = tempW;
+            }
+        }
+    }
+
+    float totalProfit = 0;
+    for (int i = 0; i < n; i++) {
+        if (c > 0 && weight[i] <= c) {
+            c -= weight[i];
+            totalProfit += profit[i];
+            printf("Take FULL item (Profit=%d, Weight=%d)\n", profit[i], weight[i]);
+        } else {
+            if (c > 0) {
+                totalProfit += profit[i] * ((float)c / weight[i]);
+                printf("Take FRACTION of item (Profit=%d, Weight=%d)\n", profit[i], weight[i]);
+            }
+            break; 
+        }
+    }
+    printf("Maximum Profit (Greedy by Profit) = %.2f\n", totalProfit);
+    return 0;
+}
+
