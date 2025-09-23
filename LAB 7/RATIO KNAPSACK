@@ -1,0 +1,65 @@
+#include <stdio.h>
+void swap(float *a, float *b) {
+    float t = *a;
+    *a = *b;
+    *b = t;
+}
+
+int partition(float ratio[], int w[], int p[], int low, int high) {
+    float pivot = ratio[high];
+    int i = low - 1;
+    for (int j = low; j < high; j++) {
+        if (ratio[j] > pivot) { 
+            i++;
+            swap(&ratio[i], &ratio[j]);
+            int tw = w[i]; w[i] = w[j]; w[j] = tw;
+            int tp = p[i]; p[i] = p[j]; p[j] = tp;
+        }
+    }
+    swap(&ratio[i + 1], &ratio[high]);
+    int tw = w[i + 1]; w[i + 1] = w[high]; w[high] = tw;
+    int tp = p[i + 1]; p[i + 1] = p[high]; p[high] = tp;
+    return i + 1;
+}
+
+void quickSort(float ratio[], int w[], int p[], int low, int high) {
+    if (low < high) {
+        int pi = partition(ratio, w, p, low, high);
+        quickSort(ratio, w, p, low, pi - 1);
+        quickSort(ratio, w, p, pi + 1, high);
+    }
+}
+
+int main() {
+    int n, c;
+    printf("Enter number of objects and knapsack size: ");
+    scanf("%d %d", &n, &c);
+
+    int w[100], p[100];
+    float ratio[100];
+
+    for (int i = 0; i < n; i++) {
+        printf("Enter weight and profit of %d object: ", i + 1);
+        scanf("%d %d", &w[i], &p[i]);
+        ratio[i] = (float)p[i] / w[i];
+    }
+
+    quickSort(ratio, w, p, 0, n - 1);
+
+    float totalProfit = 0;
+
+    for (int i = 0; i < n; i++) {
+        if (c > 0 && w[i] <= c) {
+            c -= w[i];
+            totalProfit += p[i];
+        } else {
+            if (c > 0) {
+                totalProfit += p[i] * ((float)c / w[i]);
+            }
+            break;
+        }
+    }
+    printf("Maximum Profit = %.2f\n", totalProfit);
+    return 0;
+}
+
